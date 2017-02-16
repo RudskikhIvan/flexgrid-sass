@@ -1,0 +1,144 @@
+@import './variables';
+
+@mixin media-wrap($screen-width) {
+  $min-width: nth(nth(map-values($flexgrid-sass-grid), 1), 1);
+  @if $min-width >= $screen-width {
+    @content
+  } @else {
+    @media (min-width: $screen-width) {
+      @content
+    }
+  }
+}
+
+%row {
+  display: flex;
+  flex-wrap: wrap;
+  @each $col-params in map-values($flexgrid-sass-grid) {
+    $screen-width: nth($col-params, 1);
+    $gutter: nth($col-params, 2);
+    @include media-wrap($screen-width) {
+      margin-left: -$gutter / 2;
+      margin-right: -$gutter / 2;
+    }
+  }
+}
+
+%container {
+  margin: 0 auto;
+  @each $col-params in map-values($flexgrid-sass-grid) {
+    $screen-width: nth($col-params, 1);
+    $gutter: nth($col-params, 2);
+    @include media-wrap($screen-width) {
+      padding-right: $gutter / 2;
+      padding-left: $gutter / 2;
+    }
+  }
+}
+
+%row-center { justify-content: center; }
+%row-left { justify-content: flex-start; }
+%row-right { justify-content: flex-end; }
+%row-between { justify-content: space-between; }
+%row-around { justify-content: space-around; }
+%row-middle { align-items: center; }
+%row-stretch { align-items: stretch; }
+%row-start { align-items: flex-start; }
+%row-end { align-items: flex-end; }
+
+%col {
+  order: 9999;
+  @each $col-params in map-values($flexgrid-sass-grid) {
+    $screen-width: nth($col-params, 1);
+    $gutter: nth($col-params, 2);
+    @include media-wrap($screen-width) {
+      margin-left: $gutter / 2;
+      margin-right: $gutter / 2;
+    }
+  }
+}
+
+@each $screen-name, $col-params in $flexgrid-sass-grid {
+  $screen-width: nth($col-params, 1);
+  $gutter: nth($col-params, 2);
+
+  %row-#{$screen-name}-center {
+    @include media-wrap($screen-width) {
+      justify-content: center;
+    }
+  }
+  %row-#{$screen-name}-left {
+    @include media-wrap($screen-width) {
+      justify-content: flex-start;
+    }
+  }
+  %row-#{$screen-name}-right {
+    @include media-wrap($screen-width) {
+      justify-content: flex-end;
+    }
+  }
+  %row-#{$screen-name}-between {
+    @include media-wrap($screen-width) {
+      justify-content: space-between;
+    }
+  }
+  %row-#{$screen-name}-around {
+    @include media-wrap($screen-width) {
+      justify-content: space-around;
+    }
+  }
+  %row-#{$screen-name}-middle {
+    @include media-wrap($screen-width) {
+      align-items: center;
+    }
+  }
+  %row-#{$screen-name}-stretch {
+    @include media-wrap($screen-width) {
+      align-items: stretch;
+    }
+  }
+  %row-#{$screen-name}-start {
+    @include media-wrap($screen-width) {
+      align-items: flex-start;
+    }
+  }
+  %row-#{$screen-name}-end {
+    @include media-wrap($screen-width) {
+      align-items: flex-end;
+    }
+  }
+
+  @for $col from 1 to $flexgrid-sass-cols + 1 {
+
+    %col-#{$screen-name}-#{$col} {
+      @include media-wrap($screen-width) {
+        width: calc(#{percentage($col/$flexgrid-sass-cols)} - #{$gutter});
+      }
+    }
+
+    %col-#{$screen-name}-offset-#{$col} {
+      @include media-wrap($screen-width) {
+        margin-left: calc(#{percentage($col/$flexgrid-sass-cols)} + #{$gutter / 2});
+      }
+    }
+
+    %col-#{$screen-name}-order-#{$col} {
+      @include media-wrap($screen-width) {
+        order: $col;
+      }
+    }
+
+  }
+
+  %col-#{$screen-name}-order-0 {
+    @include media-wrap($screen-width) {
+      order: unset;
+    }
+  }
+
+  %col-#{$screen-name}-offset-0 {
+    @include media-wrap($screen-width) {
+      margin-left: #{$gutter / 2};
+    }
+  }
+}
